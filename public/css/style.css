@@ -13,3 +13,19 @@ p code {
   border: 1px solid grey;
   background-color: #eee;
 }
+
+
+#room {
+  background-color: #eee;
+  border: 2px solid grey;
+  min-height: 400px;
+  padding: 9px;
+}
+
+#room p {
+  margin-bottom: 5px;
+}
+
+#input {
+  width: 900px;
+}
