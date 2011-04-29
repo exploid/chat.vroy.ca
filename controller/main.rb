@@ -1,3 +1,9 @@
+# Juggernaut.subscribe do |event, data|
+  # p event
+  # p data
+  # Juggernaut.publish( data["channel"], { :username => data["meta"]["username"], :action => "part" } )
+# end
+
 class MainController < Ramaze::Controller
   layout '/layout'
   map '/'
@@ -9,7 +15,7 @@ class MainController < Ramaze::Controller
   def join
     room, username = request[:room, :username].map{|x| h(x) }
 
-    Juggernaut.publish( room, { :username => username, :message => "just joined this room", :action => :join } )
+    Juggernaut.publish( room, { :username => username, :action => :join } )
 
     return { :success => true }.to_json
   end

@@ -47,11 +47,18 @@ $(document).ready(function(){
         function subscribe(room, username) {
             jug = new Juggernaut;
             jug.subscribe( room, function(data){
-                    if (data.action == "join") {
-                        $("#room").append("<p><i><b>"+data.username+"</b> has just joined the room.</i>");
-                    } else {
+
+                    if ( data.action == "join" ) {
+                        $("#room").append("<p><i><b>"+data.username+"</b> joined the room.</i>");
+
+                    } else if ( data.action == "part" ) {
+                        $("#room").append("<p><i><b>"+data.username+"</b> quit the room.</i>");
+
+                    } else { // message
                         $("#room").append("<p><b>"+data.username+"</b>: "+data.message+"</p>");
+
                     }
+
                 });
         }
 
