@@ -19,10 +19,19 @@ $(document).ready(function(){
                 room = $("#room_selection").val();
                 username = $("#username").val();
 
-                ajax( "/join", { room: room, username: username }, function() {
-                        $(".error").hide();
-                        $("#room").html("<p><i>You have joined <b>"+room+"</b>.</i></p>");
-                        subscribe( room, username )
+                $("#room").html("");
+
+                ajax( "/join", { room: room, username: username }, function(data) {
+                        if (data.success == true) {
+                            $(".error").hide();
+                            $("#room").html("<p><i>You have joined <b>"+room+"</b>.</i></p>");
+                            $("#roomname").html(room);
+                            subscribe( room, username );
+                            showUserList( data.online_users, username );
+                        } else {
+                            $(".error").html( data.message ).show();
+                            $("#list").html("");
+                        }
                     } );
             });
 
@@ -32,6 +41,19 @@ $(document).ready(function(){
                         $("#input").val("");
                     } );
             });
+
+        function showUserList( online_users, current_username ) {
+            online_users = online_users.sort();
+
+            $("#list").html("");
+            for (var i in online_users) {
+                if (online_users[i] == current_username) {
+                    $("#list").append("<li><b>"+online_users[i]+"</b></li>");
+                } else {
+                    $("#list").append("<li>"+online_users[i]+"</li>");
+                }
+            }
+        }
 
         function ajax(path, data, callback) {
             $.ajax({
@@ -46,13 +68,19 @@ $(document).ready(function(){
         
         function subscribe(room, username) {
             jug = new Juggernaut;
+            jug.meta = { username: username };
             jug.subscribe( room, function(data){
 
                     if ( data.action == "join" ) {
                         $("#room").append("<p><i><b>"+data.username+"</b> joined the room.</i>");
 
+                        if ( data.online_users ) {
+                            showUserList( data.online_users, username );
+                        }
+
                     } else if ( data.action == "part" ) {
                         $("#room").append("<p><i><b>"+data.username+"</b> quit the room.</i>");
+                        showUserList( data.online_users, username );
 
                     } else { // message
                         $("#room").append("<p><b>"+data.username+"</b>: "+data.message+"</p>");
