@@ -1,18 +1,18 @@
-$online_users = {}
 begin
   Thread.new do 
     Juggernaut.subscribe do |event, data|
-      room = data["channel"]
+      room_name = data["channel"]
       session_id = data["session_id"]
       username = (data["meta"] || {})["username"]
       return if username.nil?
-
-      if event == :unsubscribe and $online_users[room].to_a.include?( username )
-        $online_users[room] ||= []
-        $online_users[room].delete( username )
-        Juggernaut.publish( room, { :username => username, :action => :part, :online_users => $online_users[room] } )
-      end
       
+      room = Room[:name => room_name]
+
+      if event == :unsubscribe and room and room.has_user?( username )
+        User[ :username => username ].part( room )
+        Juggernaut.publish( room.name, { :username => username, :action => :part, :online_users => room.usernames } )
+      end
+
     end # Juggernaut
   end # Thread
 
@@ -33,22 +33,26 @@ class MainController < Ramaze::Controller
   def join
     room, username = request[:room, :username].map{|x| h(x) }
     
-    if $online_users[ room ].to_a.include?( username )
-      message = "Username <b>#{username}</b> is already taken. Please choose another username and try again."
-      return { :success => false, :message => message }.to_json
+    @user = User.find_or_create(:username => username)
+    @room = Room.find_or_create(:name => room)
+
+    begin
+      @user.join( @room )
+    rescue Exception => e
+      if e.message.include?("Duplicate entry")
+        message = "Username <b>#{username}</b> is already taken. Please choose another username and try again."
+        return { :success => false, :message => message }.to_json
+      end
     end
 
-    $online_users[room] ||= []
-    $online_users[room] << username if !$online_users[room].include?( username )
-
-    join_information = {
+    online_users = @room.usernames
+    Juggernaut.publish( room, {
       :username => username,
       :action => :join,
-      :online_users => $online_users[room]
-    }
-    Juggernaut.publish( room, join_information );
+      :online_users => online_users
+    } )
     
-    return { :success => true, :online_users => $online_users[room] }.to_json
+    return { :success => true, :online_users => online_users }.to_json
   end
 
   deny_layout :send
