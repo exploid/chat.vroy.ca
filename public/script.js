@@ -24,23 +24,26 @@ $(document).ready(function(){
                 }
             });
 
-        $("#input").keyup(function(e) {
-                var lines = $(this).val().split("\n");
-                var line_count = lines.length;
-                
-                for (var i in lines) {
-                    // 105 is the number of characters that I found fits in the textarea
-                    line_count += parseInt( lines[i].length / 105 )
-                }
-                
-                line_count -= 1; // Compensate for the first line (27)
-                if (line_count > 5) line_count = 5; // Show a maximum of 5 lines
-                var height = 27 + ((line_count)*15); // 15 is the height of an additional line.
-                
-                $(this).css("height", height);
-            });
+        $("#input").keyup(resizeInput);
 
         /* ******************************************************** Functions */
+        // expects an object in this. (jquery callback)
+        function resizeInput() {
+            var lines = $(this).val().split("\n");
+            var line_count = lines.length;
+                
+            for (var i in lines) {
+                // 105 is the number of characters that I found fits in the textarea
+                line_count += parseInt( lines[i].length / 105 );
+            }
+                
+            line_count -= 1; // Compensate for the first line (27)
+            if (line_count > 5) line_count = 5; // Show a maximum of 5 lines
+            var height = 27 + ((line_count)*15); // 15 is the height of an additional line.
+                
+            $(this).css("height", height);
+        }
+        
         function sendMessage() {
             var message = $("#input").val();
             ajax( "/send", { room: room, username: username, message: message }, function() {
