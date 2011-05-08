@@ -1,5 +1,6 @@
 $(document).ready(function(){
         
+        /* ************************************************************* INIT */
         var room;
         var username;
 
@@ -11,41 +12,64 @@ $(document).ready(function(){
         // Subscribe to a Juggernaut channel
         var jug = new Juggernaut;
 
-        $("#join").click(function(e) {
-                if (jug && room) {
-                    jug.unsubscribe(room);
-                }
-
-                room = $("#room_selection").val();
-                username = $("#username").val();
-
-                $("#room").html("");
-
-                ajax( "/join", { room: room, username: username }, function(data) {
-                        if (data.success == true) {
-                            $(".error").hide();
-                            $("#room").html("<p><i>You have joined <b>"+room+"</b>.</i></p>");
-                            $("#roomname").html(room);
-                            subscribe( room, username );
-                            showUserList( data.online_users, username );
-                        } else {
-                            $(".error").html( data.message ).show();
-                            $("#list").html("");
-                        }
-                    } );
-            });
-
+        /* *********************************************************** EVENTS */
+        $("#join").click( joinRoom );
         $("#send").click( sendMessage );
 
-        $("#input").keyup(function(e) {
-                if (e.keyCode == 13) sendMessage();
+        $("#input").keydown(function(e) {
+                // Enter = 13
+                if ( e.keyCode == 13 && !e.shiftKey ) {
+                    sendMessage();
+                    return;
+                }
             });
 
+        $("#input").keyup(function(e) {
+                var lines = $(this).val().split("\n");
+                var line_count = lines.length;
+                
+                for (var i in lines) {
+                    // 105 is the number of characters that I found fits in the textarea
+                    line_count += parseInt( lines[i].length / 105 )
+                }
+                
+                line_count -= 1; // Compensate for the first line (27)
+                if (line_count > 5) line_count = 5; // Show a maximum of 5 lines
+                var height = 27 + ((line_count)*15); // 15 is the height of an additional line.
+                
+                $(this).css("height", height);
+            });
+
+        /* ******************************************************** Functions */
         function sendMessage() {
             var message = $("#input").val();
             ajax( "/send", { room: room, username: username, message: message }, function() {
                     $("#input").val("");
                 });
+        }
+
+        function joinRoom() {
+            if (jug && room) {
+                jug.unsubscribe(room);
+            }
+
+            room = $("#room_selection").val();
+            username = $("#username").val();
+            
+            $("#room").html("");
+
+            ajax( "/join", { room: room, username: username }, function(data) {
+                    if (data.success == true) {
+                        $(".error").hide();
+                        $("#room").html("<p><i>You have joined <b>"+room+"</b>.</i></p>");
+                        $("#roomname").html(room);
+                        subscribe( room, username );
+                        showUserList( data.online_users, username );
+                    } else {
+                        $(".error").html( data.message ).show();
+                        $("#list").html("");
+                    }
+                } );
         }
 
 
