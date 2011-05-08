@@ -35,12 +35,19 @@ $(document).ready(function(){
                     } );
             });
 
-        $("#send").click(function(e) {
-                var message = $("#input").val();
-                ajax( "/send", { room: room, username: username, message: message }, function() {
-                        $("#input").val("");
-                    } );
+        $("#send").click( sendMessage );
+
+        $("#input").keyup(function(e) {
+                if (e.keyCode == 13) sendMessage();
             });
+
+        function sendMessage() {
+            var message = $("#input").val();
+            ajax( "/send", { room: room, username: username, message: message }, function() {
+                    $("#input").val("");
+                });
+        }
+
 
         function showUserList( online_users, current_username ) {
             online_users = online_users.sort();
