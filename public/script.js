@@ -20,6 +20,7 @@ $(document).ready(function(){
                 // Enter = 13
                 if ( e.keyCode == 13 && !e.shiftKey ) {
                     sendMessage();
+                    resizeInput();
                     return;
                 }
             });
