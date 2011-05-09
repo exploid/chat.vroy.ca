@@ -124,6 +124,10 @@ $(document).ready(function(){
                         $("#room").append("<p><b>"+data.username+"</b>: "+data.message+"</p>");
 
                     }
+                    
+                    // Scrolldown the window after appending a message.
+                    var room_object = $("#room");
+                    room_object.attr( "scrollTop", room_object.attr("scrollHeight") );
 
                 });
         }

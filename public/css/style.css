@@ -23,7 +23,9 @@ p code {
   background-color: #eee;
   border: 2px solid grey;
   min-height: 400px;
+  max-height: 400px;
   padding: 9px;
+  overflow: auto;
 }
 #list {
   background-color: white;
