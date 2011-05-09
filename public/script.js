@@ -20,17 +20,19 @@ $(document).ready(function(){
                 // Enter = 13
                 if ( e.keyCode == 13 && !e.shiftKey ) {
                     sendMessage();
-                    resizeInput();
                     return;
                 }
             });
 
-        $("#input").keyup(resizeInput);
+        $("#input").keyup(function(e) {
+                resizeInput( $(this) );
+            });
 
         /* ******************************************************** Functions */
-        // expects an object in this. (jquery callback)
-        function resizeInput() {
-            var lines = $(this).val().split("\n");
+        
+        // @input = jquery object representing the input
+        function resizeInput( input ) {
+            var lines = input.val().split("\n");
             var line_count = lines.length;
                 
             for (var i in lines) {
@@ -42,13 +44,14 @@ $(document).ready(function(){
             if (line_count > 5) line_count = 5; // Show a maximum of 5 lines
             var height = 27 + ((line_count)*15); // 15 is the height of an additional line.
                 
-            $(this).css("height", height);
+            input.css("height", height);
         }
         
         function sendMessage() {
             var message = $("#input").val();
             ajax( "/send", { room: room, username: username, message: message }, function() {
                     $("#input").val("");
+                    resizeInput( $("#input") );
                 });
         }
 
