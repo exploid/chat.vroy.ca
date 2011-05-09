@@ -151,7 +151,7 @@ $(document).ready(function(){
         
             $(field_selector).keyup(function(e) {
                     if ( e.keyCode == 13 ) {
-                        postCronLine(displayNextCrons);
+                        joinRoom();
                     }
                 });
         }
