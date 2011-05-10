@@ -85,7 +85,7 @@ $(document).ready(function(){
             ajax( "/join", { room: room, username: username }, function(data) {
                     if (data.success == true) {
                         $(".error").hide();
-                        $("#room").html("<p><i>You have joined <b>"+room+"</b>.</i></p>");
+                        $("#room").html("<div class='join'><p><i>You have joined <b>"+room+"</b>.</i></p></div>");
                         $("#roomname").html(room);
                         subscribe( room, username );
                         showUserList( data.online_users, username );
@@ -127,18 +127,18 @@ $(document).ready(function(){
             jug.subscribe( room, function(data){
 
                     if ( data.action == "join" ) {
-                        $("#room").append("<p><i><b>"+data.username+"</b> joined the room.</i>");
+                        $("#room").append("<div class='join'><p><i><b>"+data.username+"</b> joined the room.</p></div>");
 
                         if ( data.online_users ) {
                             showUserList( data.online_users, username );
                         }
 
                     } else if ( data.action == "part" ) {
-                        $("#room").append("<p><i><b>"+data.username+"</b> quit the room.</i>");
+                        $("#room").append("<div class='part'><p><i><b>"+data.username+"</b> quit the room.</p></div>");
                         showUserList( data.online_users, username );
 
                     } else { // message
-                        $("#room").append("<p><b>"+data.username+"</b>: "+data.message+"</p>");
+                        $("#room").append("<div class='message'><b>"+data.username+"</b>: "+data.message+"</div>");
 
                     }
                     

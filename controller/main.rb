@@ -35,7 +35,7 @@ class MainController < Ramaze::Controller
   def send
     room, username, message = request[:room, :username, :message].map{|x| h(x) }
     if !message.empty?
-      message.gsub!("\n", "<br/>")
+      message = GitHub::Markup.render("message.markdown", message)
       Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
     end
   end

@@ -35,9 +35,31 @@ p code {
   padding: 9px 0px 9px 40px;
 }
 
-#room p {
+#room div {
+  border-bottom: 1px solid #CCC;
+}
+
+#room div.part, #room div.join {
+  margin: 5px 5px 5px 0px;
+}
+
+#room div.part p, #room div.join p {
+  margin: 5px;
+}
+
+#room div.message {
+  margin: 5px 5px 5px 0px;
+}
+
+#room div.message b {
+  margin-left: 5px;
+}
+
+#room div.message p {
+  margin-left: 15px;
   margin-bottom: 5px;
 }
+
 
 #input {
   width: 870px;
