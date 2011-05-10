@@ -58,9 +58,9 @@ class MainController < Ramaze::Controller
   deny_layout :send
   def send
     room, username, message = request[:room, :username, :message].map{|x| h(x) }
-
-    message.gsub!("\n", "<br/>")
-    
-    Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
+    if !message.empty?
+      message.gsub!("\n", "<br/>")
+      Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
+    end
   end
 end

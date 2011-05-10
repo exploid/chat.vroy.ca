@@ -16,25 +16,32 @@ $(document).ready(function(){
         $("#join").click( joinRoom );
         $("#send").click( sendMessage );
 
-        $("#input").keydown(function(e) {
-                // Enter = 13
-                if ( e.keyCode == 13 && !e.shiftKey ) {
-                    sendMessage();
-                    return;
-                }
+        $("#input").keypress(function(e) {
+                setTimeout(function() {
+                        if ( e.keyCode == 13 && !e.shiftKey ) {
+                            sendMessage();
+                        } else {
+                            resizeInput( $(this), false );
+                        }
+                    }, 10);
             });
-
         $("#input").keyup(function(e) {
-                resizeInput( $(this) );
+                resizeInput( $(this), false );
             });
-
         /* ******************************************************** Functions */
-        
+
         // @input = jquery object representing the input
-        function resizeInput( input ) {
+        function resizeInput( input, clear ) {
             var lines = input.val().split("\n");
+
+            // When enter is hit and the message is not sent, reset back to a one line field.
+            if ( clear == true ) {
+                input.val("");
+                lines = [""];
+            }
+
             var line_count = lines.length;
-                
+
             for (var i in lines) {
                 // 105 is the number of characters that I found fits in the textarea
                 line_count += parseInt( lines[i].length / 105 );
@@ -49,10 +56,15 @@ $(document).ready(function(){
         
         function sendMessage() {
             var message = $("#input").val();
-            ajax( "/send", { room: room, username: username, message: message }, function() {
-                    $("#input").val("");
-                    resizeInput( $("#input") );
-                });
+            if ( message.trim().length > 0 ) {
+                ajax( "/send", { room: room, username: username, message: message }, function() {
+                        resizeInput( $("#input"), true);
+                    });
+            } else {
+                resizeInput( $("#input"), true);
+            }
+
+            $("#input").focus();
         }
 
         function joinRoom() {
