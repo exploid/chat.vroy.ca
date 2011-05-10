@@ -16,18 +16,17 @@ $(document).ready(function(){
         $("#join").click( joinRoom );
         $("#send").click( sendMessage );
 
-        $("#input").keypress(function(e) {
-                setTimeout(function() {
-                        if ( e.keyCode == 13 && !e.shiftKey ) {
-                            sendMessage();
-                        } else {
-                            resizeInput( $(this), false );
-                        }
-                    }, 10);
+        $("#input").keydown(function(e) {
+                if ( e.keyCode == 13 && !e.shiftKey ) {
+                    sendMessage();
+                } else {
+                    resizeInput( $(this), false );
+                }
             });
         $("#input").keyup(function(e) {
                 resizeInput( $(this), false );
             });
+        
         /* ******************************************************** Functions */
 
         // @input = jquery object representing the input
@@ -46,9 +45,9 @@ $(document).ready(function(){
                 // 105 is the number of characters that I found fits in the textarea
                 line_count += parseInt( lines[i].length / 105 );
             }
-                
+
             line_count -= 1; // Compensate for the first line (27)
-            if (line_count > 5) line_count = 5; // Show a maximum of 5 lines
+            if (line_count == 0) line_count = 1;
             var height = 27 + ((line_count)*15); // 15 is the height of an additional line.
                 
             input.css("height", height);
