@@ -76,7 +76,6 @@ $(document).ready(function(){
                 jug.unsubscribe(room);
             }
             
-            
             room = $("#room_selection").val();
             username = $("#username").val();
             
@@ -89,6 +88,7 @@ $(document).ready(function(){
                         $("#roomname").html(room);
                         subscribe( room, username );
                         showUserList( data.online_users, username );
+                        $("#input").focus();
                     } else {
                         $(".error").html( data.message ).show();
                         $("#list").html("");
