@@ -68,10 +68,15 @@ $(document).ready(function(){
         }
 
         function joinRoom() {
+            if (room == $("#room_selection").val() && username == $("#username").val() ) {
+                return; // Cancel if trying to join the same room.
+            }
+
             if (jug && room) {
                 jug.unsubscribe(room);
             }
-
+            
+            
             room = $("#room_selection").val();
             username = $("#username").val();
             
