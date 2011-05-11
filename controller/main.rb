@@ -1,3 +1,8 @@
+GitHub::Markup.markup(:markdown, /md|mkdn?|mdown|markdown/) do |message|
+  # See https://github.com/tanoku/redcarpet/blob/master/lib/redcarpet.rb for the options documentation
+  Markdown.new(message, :autolink, :hard_wrap, :safelink).to_html
+end
+
 class MainController < Ramaze::Controller
   layout '/layout'
   map '/'
@@ -37,22 +42,9 @@ class MainController < Ramaze::Controller
     
     return { :success => false }.to_json if message.empty?
 
-    # http://github.github.com/github-flavored-markdown/
-    # in very clear cases, let newlines become <br /> tags
-    message.gsub!(/^[\w\<][^\n]*\n+/) do |x|
-      x =~ /\n{2}/ ? x : (x.strip!; x << "  \n")
-    end
+    rendered = GitHub::Markup.render("message.markdown", message)
 
-    # Autolinking - Modified version of the daringfireball regex to support autolinking
-    # http://daringfireball.net/2009/11/liberal_regex_for_matching_urls
-    message.gsub!(%r!\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))/?!i) do |link|
-      url = (link =~ %r!^https?://!i) ? link : "http://#{link}" # Ensure http is in the url part.
-      %(<a href="#{url}" target="_blank">#{link}</a>)
-    end
-
-    message = GitHub::Markup.render("message.markdown", message)
-
-    Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
+    Juggernaut.publish( room, { :username => username, :message => rendered, :action => :message } )
     
     return { :succes => true }.to_json
   end
