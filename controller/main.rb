@@ -34,9 +34,19 @@ class MainController < Ramaze::Controller
   deny_layout :send
   def send
     room, username, message = request[:room, :username, :message].map{|x| h(x) }
-    if !message.empty?
-      message = GitHub::Markup.render("message.markdown", message)
-      Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
+    
+    return { :success => false }.to_json if message.empty?
+
+    # http://github.github.com/github-flavored-markdown/
+    # in very clear cases, let newlines become <br /> tags
+    message.gsub!(/^[\w\<][^\n]*\n+/) do |x|
+      x =~ /\n{2}/ ? x : (x.strip!; x << "  \n")
     end
+
+    message = GitHub::Markup.render("message.markdown", message)
+
+    Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
+    
+    return { :succes => true }.to_json
   end
 end
