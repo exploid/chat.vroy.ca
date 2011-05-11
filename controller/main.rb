@@ -43,6 +43,13 @@ class MainController < Ramaze::Controller
       x =~ /\n{2}/ ? x : (x.strip!; x << "  \n")
     end
 
+    # Autolinking - Modified version of the daringfireball regex to support autolinking
+    # http://daringfireball.net/2009/11/liberal_regex_for_matching_urls
+    message.gsub!(%r!\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))/?!i) do |link|
+      url = (link =~ %r!^https?://!i) ? link : "http://#{link}" # Ensure http is in the url part.
+      %(<a href="#{url}" target="_blank">#{link}</a>)
+    end
+
     message = GitHub::Markup.render("message.markdown", message)
 
     Juggernaut.publish( room, { :username => username, :message => message, :action => :message } )
