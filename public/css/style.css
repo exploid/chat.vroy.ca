@@ -24,7 +24,7 @@ p code {
   border: 2px solid grey;
   min-height: 400px;
   max-height: 400px;
-  padding: 9px;
+  padding: 3px;
   overflow: auto;
 }
 #list {
@@ -36,30 +36,30 @@ p code {
 }
 
 #room div {
-  border-bottom: 1px solid #CCC;
+  margin: 0px;
 }
-
-#room div.part, #room div.join {
-  margin: 5px 5px 5px 0px;
+#room div.join, #room div.part {
+  float: right;
+  padding: 5px 0px 5px 0px;
+  margin: 0px;
 }
-
-#room div.part p, #room div.join p {
-  margin: 5px;
-}
-
-#room div.message {
-  margin: 5px 5px 5px 0px;
+#room div p {
+  padding: 0px;
+  margin: 0px;
 }
 
 #room div.message b {
-  margin-left: 5px;
+  float: left;
 }
-
 #room div.message p {
-  margin-left: 15px;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 }
 
+#room div div.clear {
+  background-color:red;
+  height:20px;
+  clear: both;
+}
 
 #input {
   width: 870px;

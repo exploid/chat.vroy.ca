@@ -83,7 +83,7 @@ $(document).ready(function(){
             ajax( "/join", { room: room, username: username }, function(data) {
                     if (data.success == true) {
                         $(".error").hide();
-                        $("#room").html("<div class='join'><p><i>You have joined <b>"+room+"</b>.</i></p></div>");
+                        $("#room").html("<div class='join'><p><i>You have joined <b>"+room+"</b>.</i></p></div><div class='clear'></div>");
                         $("#roomname").html(room);
                         subscribe( room, username );
                         showUserList( data.online_users, username );
@@ -126,18 +126,19 @@ $(document).ready(function(){
             jug.subscribe( room, function(data){
 
                     if ( data.action == "join" ) {
-                        $("#room").append("<div class='join'><p><i><b>"+data.username+"</b> joined the room.</p></div>");
+                        $("#room").append("<div class='join'><p><i><b>"+data.username+"</b> joined the room.</p></div><div class='clear'></div>");
 
                         if ( data.online_users ) {
                             showUserList( data.online_users, username );
                         }
 
                     } else if ( data.action == "part" ) {
-                        $("#room").append("<div class='part'><p><i><b>"+data.username+"</b> quit the room.</p></div>");
+                        $("#room").append("<div class='part'><p><i><b>"+data.username+"</b> quit the room.</p></div><div class='clear'></div>");
                         showUserList( data.online_users, username );
 
                     } else { // message
-                        $("#room").append("<div class='message'><b>"+data.username+"</b>: "+data.message+"</div>");
+                        $("#room").append("<div class='message'><b>"+data.username+":&nbsp;</b>"+data.message+"</div><div class='clear'></div>");
+                        $("#room div.message:last p:last").css("margin-bottom", "0px");
 
                     }
                     
