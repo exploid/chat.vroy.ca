@@ -4,6 +4,9 @@ $(document).ready(function(){
         var room;
         var username;
 
+        var my_messages = []; // A log of all of the messages that I sent.
+        var current_message_index; // Keeps track of where we are in my_messages.
+
         initField("#room_selection", "Room");
         initField("#username", "Username");
         
@@ -17,7 +20,7 @@ $(document).ready(function(){
         $("#send").click( sendMessage );
 
         $("#input").keydown(function(e) {
-                if ( e.keyCode == 13 && !e.shiftKey ) {
+                if ( e.keyCode == 13 && !e.shiftKey ) { // enter
                     sendMessage();
                 } else {
                     resizeInput( $(this), false );
@@ -25,9 +28,37 @@ $(document).ready(function(){
             });
         $("#input").keyup(function(e) {
                 resizeInput( $(this), false );
+                
+                rotateThroughSentMessages(e);
             });
         
         /* ******************************************************** Functions */
+
+        // 38 = up
+        // 40 = down
+        function rotateThroughSentMessages(e) {
+            // Filter out keys.
+            if ( !e.ctrlKey ) { return; }
+            if ( e.keyCode != 38 && e.keyCode != 40) { return; }
+
+            // Set the index to be one higher than the last message so we can adjust correctly in the up condition
+            if ( current_message_index == undefined ) {
+                current_message_index = my_messages.length;
+            }
+
+            // Rotate through the messages
+            if ( e.keyCode == 38 ) { current_message_index -= 1; } // up
+            if ( e.keyCode == 40 ) { current_message_index += 1; } // down
+
+            // Continue looping through when out of range.
+            if ( current_message_index > my_messages.length-1 ) {
+                current_message_index = 0;
+            } else if ( current_message_index < 0 ) {
+                current_message_index = my_messages.length-1;
+            }
+
+            $("#input").val( my_messages[current_message_index] );
+        }
 
         // @input = jquery object representing the input
         function resizeInput( input, clear ) {
@@ -57,6 +88,8 @@ $(document).ready(function(){
             var message = $("#input").val();
             if ( message.trim().length > 0 ) {
                 ajax( "/send", { room: room, username: username, message: message }, function() {
+                        my_messages.push( message );
+                        current_message_index = undefined; // Reset so rotateThroughSentMessages works
                         resizeInput( $("#input"), true);
                     });
             } else {
@@ -171,7 +204,7 @@ $(document).ready(function(){
                 });
         
             $(field_selector).keyup(function(e) {
-                    if ( e.keyCode == 13 ) {
+                    if ( e.keyCode == 13 ) { // enter
                         joinRoom();
                     }
                 });
