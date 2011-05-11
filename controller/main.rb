@@ -1,6 +1,6 @@
 GitHub::Markup.markup(:markdown, /md|mkdn?|mdown|markdown/) do |message|
   # See https://github.com/tanoku/redcarpet/blob/master/lib/redcarpet.rb for the options documentation
-  Markdown.new(message, :autolink, :hard_wrap, :safelink).to_html
+  Redcarpet.new(message, :autolink, :hard_wrap, :safelink, :strikethrough).to_html
 end
 
 class MainController < Ramaze::Controller
