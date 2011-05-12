@@ -2,7 +2,7 @@
 
 GitHub::Markup.markup(:markdown, /md|mkdn?|mdown|markdown/) do |message|
   # See https://github.com/tanoku/redcarpet/blob/master/lib/redcarpet.rb for the options documentation
-  rendered = Redcarpet.new(message, :autolink, :hard_wrap, :safelink, :strikethrough, :fenced_code).to_html
+  rendered = Redcarpet.new(message, :autolink, :hard_wrap, :safelink, :strikethrough, :fenced_code, :gh_blockcode).to_html
   
   # Replace the html code blocks that :fenced_code generated in the html with colorized code.
   noko = Nokogiri::HTML::DocumentFragment.parse( rendered )
