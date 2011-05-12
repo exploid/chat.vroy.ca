@@ -1,18 +1,13 @@
 # See https://github.com/richleland/pygments-css for more pygments styles
 
 GitHub::Markup.markup(:markdown, /md|mkdn?|mdown|markdown/) do |message|
-  # See https://github.com/tanoku/redcarpet/blob/master/lib/redcarpet.rb for the options documentation
-  rendered = Redcarpet.new(message, :autolink, :hard_wrap, :safelink, :strikethrough, :fenced_code, :gh_blockcode).to_html
   
-  # Replace the html code blocks that :fenced_code generated in the html with colorized code.
-  noko = Nokogiri::HTML::DocumentFragment.parse( rendered )
-  noko.css("pre > code").each do |code_block|
-    language = code_block.attr("class").to_sym
-    code = code_block.text
-    code_block.parent.inner_html = Albino.colorize( code, language )
+  message.scan(/(```(\w*)\n(.*)```)/m).each do |full, lang, code|
+    message.gsub!( full, Albino.colorize(code, lang) )
   end
-
-  noko.to_html
+  
+  # See https://github.com/tanoku/redcarpet/blob/master/lib/redcarpet.rb for the options documentation
+  Redcarpet.new(message, :autolink, :hard_wrap, :safelink, :strikethrough).to_html
 end
 
 class MainController < Ramaze::Controller
@@ -50,7 +45,8 @@ class MainController < Ramaze::Controller
 
   deny_layout :send
   def send
-    room, username, message = request[:room, :username, :message].map{|x| h(x) }
+    room, username = request[:room, :username].map{|x| h(x) }
+    message = request[:message]
     
     return { :success => false }.to_json if message.empty?
 
