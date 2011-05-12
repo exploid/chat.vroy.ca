@@ -7,6 +7,8 @@ require "ramaze"
 require "json"
 require "juggernaut"
 require "github/markup"
+require "albino"
+require "nokogiri"
 
 # Application setup
 Ramaze.acquire("controller/*")

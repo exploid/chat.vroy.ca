@@ -65,3 +65,21 @@ p code {
   width: 870px;
   height: 42px;
 }
+
+#room > div.message > pre {
+    margin: 0px;
+    padding: 0px;
+    border: none;
+}
+.highlight {
+    background: none;
+    margin: 0px;
+    padding: 0px;
+}
+.highlight pre {
+  background: white;
+  background-color: white;
+  margin: 0px;
+  padding: 5px;
+  line-height: 9px;
+}
