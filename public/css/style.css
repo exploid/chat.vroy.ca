@@ -73,9 +73,9 @@ p code {
     padding: 0px;
     border: none;
 }
-.highlight {
+#room div.highlight {
     background: none;
-    margin: 0px;
+    margin: 5px 0px 5px 0px;
     padding: 0px;
 }
 .highlight pre {
