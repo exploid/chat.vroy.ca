@@ -130,8 +130,6 @@ $(document).ready(function(){
 
 
         function showUserList( online_users, current_username ) {
-            online_users = online_users.sort();
-
             $("#list").html("");
             for (var i in online_users) {
                 if (online_users[i] == current_username) {

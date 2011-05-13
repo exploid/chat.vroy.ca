@@ -12,9 +12,10 @@ class Room < Sequel::Model
     user_ids = Join.filter(:room_id => self.id).map(:user_id)
     return User.filter(:id => user_ids).all
   end
-
+  
+  # Return the usernames that are presently in the room in case insensitive alphabetical order.
   def usernames
-    self.users.map{|user| user.username }
+    self.users.map{|user| user.username }.sort { |a,b| a.downcase <=> b.downcase }
   end
 
   def has_user?( username )
