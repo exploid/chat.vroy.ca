@@ -1,6 +1,11 @@
 # See https://github.com/richleland/pygments-css for more pygments styles
 
 GitHub::Markup.markup(:markdown, /md|mkdn?|mdown|markdown/) do |message|
+  # Bullet lists should appear under the username when the first element of a message.
+  message = "&nbsp;\n\n#{message}" if message =~ /\A\* /m
+  
+  # The first newline of a string should be considered a break.
+  message.gsub!(/\A\n/, "<br/>") if message =~ /\A\n/m
   
   message.scan(/(```(\w*)\n(.*)```)/m).each do |full, lang, code|
     message.gsub!( full, Albino.colorize(code, lang) )
