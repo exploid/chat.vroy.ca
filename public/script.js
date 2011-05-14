@@ -150,11 +150,27 @@ $(document).ready(function(){
                         error: displayErrorMessage
                         });
         }
-        
+
+        function getFormattedLocalTime() {
+            var now = new Date();
+            var hour = now.getHours(),
+                minute = now.getMinutes(),
+                second = now.getSeconds(),
+                am_pm = "AM";
+
+            if( hour > 11 ) am_pm = "PM"; // defaults to am.
+            if ( hour < 10 ) hour = "0"+hour;
+            if ( minute < 10 ) minute = "0"+minute;
+            if ( second < 10 ) second = "0"+second;
+
+            return hour+":"+minute+":"+second+" "+am_pm;
+        }
+
         function subscribe(room, username) {
             jug = new Juggernaut;
             jug.meta = { username: username };
             jug.subscribe( room, function(data){
+                    var local_time = getFormattedLocalTime();
 
                     if ( data.action == "join" ) {
                         $("#room").append("<div class='join'><p><i><b>"+data.username+"</b> joined the room.</p></div><div class='clear'></div>");
@@ -168,7 +184,7 @@ $(document).ready(function(){
                         showUserList( data.online_users, username );
 
                     } else { // message
-                        $("#room").append("<div class='message'><b>"+data.username+":&nbsp;</b>"+data.message+"</div><div class='clear'></div>");
+                        $("#room").append("<div class='message'><b>("+local_time+") "+data.username+":&nbsp;</b>"+data.message+"</div><div class='clear'></div>");
                         $("#room div.message:last p:last").css("margin-bottom", "0px");
 
                     }
