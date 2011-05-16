@@ -66,6 +66,10 @@ p code {
   height: 42px;
 }
 
+#send {
+  margin-top: 12px;
+}
+
 #room > div.message > pre {
     margin: 0px;
     padding: 0px;
