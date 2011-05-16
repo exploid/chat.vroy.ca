@@ -24,15 +24,17 @@ p code {
   border: 2px solid grey;
   min-height: 400px;
   max-height: 400px;
-  padding: 3px;
+  padding: 9px;
   overflow: auto;
 }
 #list {
   background-color: white;
   border: 2px solid grey;
   min-height: 400px;
+  max-height: 400px;
   margin-right: 0px;
   padding: 9px 0px 9px 40px;
+  overflow: auto;
 }
 
 #room div {
@@ -75,9 +77,9 @@ p code {
     padding: 0px;
     border: none;
 }
-.highlight {
+#room div.highlight {
     background: none;
-    margin: 0px;
+    margin: 5px 0px 5px 0px;
     padding: 0px;
 }
 .highlight pre {
