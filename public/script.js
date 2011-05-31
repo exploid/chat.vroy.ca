@@ -15,6 +15,10 @@ $(document).ready(function(){
         // Subscribe to a Juggernaut channel
         var jug = new Juggernaut;
 
+        // Setup var and start the blinkTitle loop.
+        var should_blink_title = false;
+        blinkTitle();
+
         /* *********************************************************** EVENTS */
         $("#join").click( joinRoom );
         $("#send").click( sendMessage );
@@ -32,6 +36,11 @@ $(document).ready(function(){
                 rotateThroughSentMessages(e);
             });
         
+        // Cancel Keypresses when mouse moves or when the keyboard is used
+        $(document).mousemove(function(e) { should_blink_title = false; });
+        $(document).keypress(function(e) { should_blink_title = false; });
+
+
         /* ******************************************************** Functions */
 
         // 38 = up
@@ -166,6 +175,20 @@ $(document).ready(function(){
             return hour+":"+minute+":"+second+" "+am_pm;
         }
 
+        function blinkTitle() {
+            var original_title = document.title;
+            var blink = true;
+
+            setInterval(function() {
+                    if (blink && should_blink_title) {
+                        document.title = "** New Message **";
+                    } else {
+                        document.title = original_title;
+                    }
+                    blink = !blink;
+                }, 800);
+        }
+
         function subscribe(room, username) {
             jug = new Juggernaut;
             jug.meta = { username: username };
@@ -193,6 +216,8 @@ $(document).ready(function(){
                     var room_object = $("#room");
                     room_object.attr( "scrollTop", room_object.attr("scrollHeight") );
 
+                    // Only blink if message not sent by self.
+                    if (data.username != username) should_blink_title = true;
                 });
         }
 
