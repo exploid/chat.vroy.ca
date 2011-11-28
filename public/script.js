@@ -13,7 +13,7 @@ $(document).ready(function(){
         $(".error").hide();
 
         // Subscribe to a Juggernaut channel
-        var jug = new Juggernaut;
+        var jug;
 
         // Setup var and start the blinkTitle loop.
         var should_blink_title = false;
